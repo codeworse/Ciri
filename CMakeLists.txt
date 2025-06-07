@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.29.2)
-project(Ciri)
+project(Ciri CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -45,10 +45,12 @@ endif()
 add_compile_options(-O3)
 
 set(SOURCES
-    src/metrics/counter.cpp
+    src/metrics/counter_basic.cpp
 )
 set(HEADERS
-    src/metrics/counter.h
+    src/metrics/counter_sum.h
+    src/metrics/counter_minmax.h
+    src/metrics/counter_basic.h
 )
 add_library(ciri STATIC ${SOURCES} ${HEADERS})
 
