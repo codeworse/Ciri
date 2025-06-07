@@ -1,4 +1,5 @@
 # Ciri
+[![ci](https://github.com/codeworse/Ciri/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/codeworse/Ciri/actions/workflows/c-cpp.yml)&nbsp;
 ## Mertics
 ### Counters
 `ciri::metrics::Counters<T>` used for counting integral mertics(e.g. cache hits) with large amount of update requests and small number of get requests.
