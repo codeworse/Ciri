@@ -14,11 +14,11 @@ template<std::integral T>
 class Counter {
 public:
     static const size_t alignment = 64;
-    Counter(size_t capacity = 64) : 
+    Counter(size_t capacity) : 
         fast_module((capacity & (capacity - 1)) == 0)
         , capacity_(capacity) {
         assert(capacity_ > 0);
-        counters_ = static_cast<std::atomic<T>*>(std::aligned_alloc(alignment, capacity));
+        counters_ = static_cast<std::atomic<T>*>(std::aligned_alloc(alignment, capacity * sizeof(decltype(counters_[0]))));
         for (size_t i = 0; i < capacity_; ++i) {
             counters_[i].store(0);
         }
@@ -34,7 +34,7 @@ public:
     T get() const {
         T sum{0};
         for (size_t i = 0; i < capacity_; ++i) {
-            sum += counters_[i].load();
+            sum += counters_[i].load(std::memory_order_relaxed);
         }
         return sum;
     }
