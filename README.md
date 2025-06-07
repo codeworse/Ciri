@@ -18,6 +18,6 @@ Example:
 ```
 
 ## TODO
-- [] Add average counter
-- [] Add set-counter
-- [] Streaming Algorithms(count min/max/majority)
+- [ ] Add average counter
+- [ ] Add set-counter
+- [ ] Streaming Algorithms(count min/max/majority)
