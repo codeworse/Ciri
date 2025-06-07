@@ -15,3 +15,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: build
       run: mkdir build && cd build && cmake .. && make -j `nproc`
+    - name: test
+      run: cd build && ./tests/tests
