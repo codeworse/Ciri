@@ -17,8 +17,8 @@ jobs:
       run: mkdir build && cd build && cmake .. && make -j `nproc`
     - name: build_asan
       run: mkdir build_asan && cd build_asan && cmake -DENABLE_ASAN=ON .. && make -j `nproc`
-    - name: build_msan
-      run: mkdir build_msan && cd build_msan && cmake -DENABLE_MSAN=ON .. && make -j `nproc`
+    - name: build_tsan
+      run: mkdir build_msan && cd build_msan && cmake -DENABLE_TSAN=ON .. && make -j `nproc`
     - name: build_ubsan
       run: mkdir build_ubsan && cd build_ubsan && cmake -DENABLE_UBSAN=ON .. && make -j `nproc`
     - name: test
