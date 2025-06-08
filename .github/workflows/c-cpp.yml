@@ -14,12 +14,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: build
+      uses: actions/upload-artifact@v4
       run: mkdir build && cd build && cmake .. && make -j `nproc`
     - name: build_asan
+      uses: actions/upload-artifact@v4
       run: mkdir build_asan && cd build_asan && cmake -DENABLE_ASAN=ON .. && make -j `nproc`
     - name: build_tsan
       run: mkdir build_tsan && cd build_tsan && cmake -DENABLE_TSAN=ON .. && make -j `nproc`
     - name: build_ubsan
+      uses: actions/upload-artifact@v4
       run: mkdir build_ubsan && cd build_ubsan && cmake -DENABLE_UBSAN=ON .. && make -j `nproc`
     - name: Upload builds
       uses: actions/upload-artifact@v4
