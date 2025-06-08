@@ -25,10 +25,10 @@ public:
     }
     T get() const {
         T sum = T{};
-        auto f = [&](const T& element) {
-            sum += element;
+        auto f = [&](const std::atomic<T>& element) {
+            sum += element.load(std::memory_order_relaxed);
         };
-        counter_.get(f);
+        counter_.iterate(f);
         return sum;
     }
 

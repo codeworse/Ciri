@@ -23,12 +23,24 @@ TEST(MetricsTests, CounterSum) {
 }
 
 TEST(MetricsTests, CounterMax) {
-    ciri::metrics::CounterMinMax<size_t> c(ciri::metrics::CounterMinMax<size_t>::Mode::Max);
-    for (size_t i = 0; i <= 100; ++i) {
-        c.set(i);
+    size_t n = 4;
+    size_t iterations = 100'000'000;
+    std::vector<std::thread> threads;
+    threads.reserve(n);
+    ciri::metrics::CounterMinMax<size_t> c(ciri::metrics::CounterMinMax<size_t>::Mode::Max, n);
+    for (size_t i = 0; i < n; ++i) {
+        threads.emplace_back([&c, &iterations, num = i]() {
+            for (size_t i = 0; i <= iterations; ++i) {
+                c.update(num * i);
+            }
+        });
     }
+    for (size_t i = 0; i < n; ++i) {
+        threads[i].join();
+    }
+    std::atomic_thread_fence(std::memory_order_acquire);
 
-    EXPECT_EQ(c.get(), 100);
+    EXPECT_EQ(c.get(), (n - 1) * iterations);
 }
 
 TEST(MetricsTests, CounterStress) {

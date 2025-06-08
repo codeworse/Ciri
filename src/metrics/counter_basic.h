@@ -20,6 +20,7 @@ public:
         , capacity_(capacity) {
         assert(capacity_ > 0);
         counters_ = static_cast<std::atomic<T>*>(std::aligned_alloc(alignment, capacity * sizeof(decltype(counters_[0]))));
+        assert(counters_ != nullptr);
         for (size_t i = 0; i < capacity_; ++i) {
             new (counters_ + i) std::atomic<T>();
         }
@@ -44,15 +45,8 @@ public:
     void set_if(T value, F&& func) {
         size_t thread_hash = std::hash<std::thread::id>{}(std::this_thread::get_id());
         size_t index = get_index(thread_hash);
-        if (func(counters_[index].load(std::memory_order_relaxed))) {
+        if (func(counters_[index])) {
             counters_[index].store(value, std::memory_order_relaxed);
-        }
-    }
-
-    template<std::invocable<const T&> F>
-    void get(F&& func) const {
-        for (size_t i = 0; i < capacity_; ++i) {
-            func(counters_[i].load(std::memory_order_relaxed));
         }
     }
 
@@ -67,6 +61,13 @@ public:
         for (size_t i = 0; i < capacity_; ++i) {
             func(counters_[i]);
         }
+    }
+
+    template<std::invocable<const std::atomic<T>&> F>
+    void iterate(F&& func) const {
+        for (size_t i = 0; i < capacity_; ++i) {
+            func(counters_[i]);
+        }
     } 
 
     ~CounterBasic() {
@@ -77,8 +78,8 @@ public:
         return fast_module ? (i & (capacity_ - 1)) : (i % capacity_);
     }
     const bool fast_module = false;
-    const size_t capacity_;
-    alignas(alignment) std::atomic<T>* counters_;
+    const size_t capacity_{0};
+    alignas(alignment) std::atomic<T>* counters_{nullptr};
 };
 }
 }
