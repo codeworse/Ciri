@@ -22,5 +22,4 @@ jobs:
     - name: build_ubsan
       run: mkdir build_ubsan && cd build_ubsan && cmake -DENABLE_UBSAN=ON .. && make -j `nproc`
     - name: test
-      needs: [build, build_asan, build_msan, build_ubsan]
       run: cd build && ./tests/tests
