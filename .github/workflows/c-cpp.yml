@@ -35,8 +35,6 @@ jobs:
       with:
         name: builds
         path: builds
-    - name: List of build files
-      run: ls -R builds
     - name: test
       run: |
         cd builds/build
