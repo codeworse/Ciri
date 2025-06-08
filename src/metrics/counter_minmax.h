@@ -4,35 +4,36 @@
 #include "metrics/counter_basic.h"
 namespace ciri {
 namespace metrics {
-template<typename T>
-concept ComparedAndMovable = std::totally_ordered<T> && std::is_move_assignable_v<T>;
 
-template<ComparedAndMovable T>
+template<std::totally_ordered T>
 class CounterMinMax {
 public:
     enum Mode {
         Min,
         Max
     };
-    CounterMinMax(Mode mode, size_t capacity = 1) : mode_(mode), counter_(capacity) {}
+    struct CompareCallback {
+        Mode mode;
+        T upd;
+        void operator()(std::atomic<T>& element) {
+            while (true) {
+                T value = element.load(std::memory_order_relaxed);
+                if ((value <= upd && mode == Mode::Min) || (value >= upd && mode == Mode::Max)) {
+                    break;
+                }
+                if (element.compare_exchange_strong(value, upd, std::memory_order_relaxed)) {
+                    break;
+                }
+            }
+        }
+    };
+    CounterMinMax(Mode mode, size_t capacity = 1) : mode_(mode), counter_(capacity) {
+
+    }
 
     void update(T upd) {
-        auto min_func = [&](const std::atomic<T>& element) -> bool {
-            T value = element.load(std::memory_order_relaxed);
-            return value > upd;
-        };
-        auto max_func = [&](const std::atomic<T>& element) -> bool {
-            T value = element.load(std::memory_order_relaxed);
-            return value < upd;
-        };
-        switch (mode_) {
-        case Mode::Max:
-            counter_.set_if(upd, max_func);
-            return;
-        case Mode::Min:
-            counter_.set_if(upd, min_func);
-            return;
-        }
+        CompareCallback callback{.mode = mode_, .upd = std::move(upd)};
+        counter_.call(callback);
     }
 
     T get() const {

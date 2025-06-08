@@ -19,6 +19,7 @@ TEST(MetricsTests, CounterSum) {
         c.decrease(10);
     }
 
+    std::atomic_thread_fence(std::memory_order_acquire);
     EXPECT_EQ(c.get(), 0);
 }
 
@@ -27,7 +28,7 @@ TEST(MetricsTests, CounterMax) {
     size_t iterations = 100'000'000;
     std::vector<std::thread> threads;
     threads.reserve(n);
-    ciri::metrics::CounterMinMax<size_t> c(ciri::metrics::CounterMinMax<size_t>::Mode::Max, n);
+    ciri::metrics::CounterMinMax<size_t> c(ciri::metrics::CounterMinMax<size_t>::Mode::Max, 4);
     for (size_t i = 0; i < n; ++i) {
         threads.emplace_back([&c, &iterations, num = i]() {
             for (size_t i = 0; i <= iterations; ++i) {
@@ -46,9 +47,9 @@ TEST(MetricsTests, CounterMax) {
 TEST(MetricsTests, CounterStress) {
     size_t n = 4;
     size_t iterations = 100'000'000;
-    std::vector<std::thread> threads;
-    threads.reserve(n);
     {
+        std::vector<std::thread> threads;
+        threads.reserve(n);
         std::atomic_size_t dummy;
         std::cout << "dummy: ";
         auto start = std::chrono::system_clock::now();
@@ -70,7 +71,9 @@ TEST(MetricsTests, CounterStress) {
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "ms\n";
     }
     {
-        ciri::metrics::CounterSum c(4);
+        std::vector<std::thread> threads;
+        threads.reserve(n);
+        ciri::metrics::CounterSum c(1);
         std::cout << "ciri: ";
         auto start = std::chrono::system_clock::now();
         for (size_t i = 0; i < n; ++i) {

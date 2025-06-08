@@ -41,13 +41,10 @@ public:
         counters_[get_index(thread_hash)].store(value, std::memory_order_relaxed);
     }
 
-    template<std::invocable<const T&> F>
-    void set_if(T value, F&& func) {
+    template<std::invocable<std::atomic<T>&> F>
+    void call(F&& callback) {
         size_t thread_hash = std::hash<std::thread::id>{}(std::this_thread::get_id());
-        size_t index = get_index(thread_hash);
-        if (func(counters_[index])) {
-            counters_[index].store(value, std::memory_order_relaxed);
-        }
+        callback(counters_[get_index(thread_hash)]);
     }
 
     inline void get_index() const {
