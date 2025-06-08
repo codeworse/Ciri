@@ -14,12 +14,24 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: build
+      uses: actions/upload-artifact@v4
       run: mkdir build && cd build && cmake .. && make -j `nproc`
     - name: build_asan
+      uses: actions/upload-artifact@v4
       run: mkdir build_asan && cd build_asan && cmake -DENABLE_ASAN=ON .. && make -j `nproc`
     - name: build_tsan
+      uses: actions/upload-artifact@v4
       run: mkdir build_msan && cd build_msan && cmake -DENABLE_TSAN=ON .. && make -j `nproc`
     - name: build_ubsan
+      uses: actions/upload-artifact@v4
       run: mkdir build_ubsan && cd build_ubsan && cmake -DENABLE_UBSAN=ON .. && make -j `nproc`
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/upload-artifact@v4
+    - name: test_ubsan
+      run: cd ubsan_build && ./tests/tests
     - name: test
       run: cd build && ./tests/tests
