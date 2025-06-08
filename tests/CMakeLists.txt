@@ -9,7 +9,7 @@ target_link_libraries(tests PRIVATE
 
 if(ENABLE_ASAN)
     target_compile_definitions(tests PRIVATE
-        ASAN_OPTIONS=detect_leaks=1:halt_on_error=1
+        ASAN_OPTIONS=detect_leaks=1:halt_on_error=1:allocator_may_return_null=1
     )
 endif()
 
