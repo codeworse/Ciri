@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <atomic>
 #include <chrono>
+
 #include "metrics/counter_basic.h"
 #include "metrics/counter_minmax.h"
 #include "metrics/counter_sum.h"
@@ -23,11 +24,10 @@ TEST(MetricsTests, CounterSum) {
 
 TEST(MetricsTests, CounterMax) {
   size_t n = 4;
-  size_t iterations = 100 '000' 000;
+  size_t iterations = 100'000'000;  // clang-format off
   std::vector<std::thread> threads;
   threads.reserve(n);
-  ciri::metrics::CounterMinMax<size_t> c(
-      ciri::metrics::CounterMinMax<size_t>::Mode::Max, 4);
+  ciri::metrics::CounterMinMax<size_t> c(ciri::metrics::CounterMinMax<size_t>::Mode::Max, 4);
   for (size_t i = 0; i < n; ++i) {
     threads.emplace_back([&c, &iterations, num = i]() {
       for (size_t i = 0; i <= iterations; ++i) {
@@ -45,7 +45,7 @@ TEST(MetricsTests, CounterMax) {
 
 TEST(MetricsTests, CounterStress) {
   size_t n = 4;
-  size_t iterations = 100 '000' 000;
+  size_t iterations = 100'000'000; // clang-format off
   {
     std::vector<std::thread> threads;
     threads.reserve(n);
@@ -67,9 +67,7 @@ TEST(MetricsTests, CounterStress) {
     threads.clear();
     auto finish = std::chrono::system_clock::now();
     auto duration = finish - start;
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(duration)
-                     .count()
-              << "ms\n";
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "ms\n";
   }
   {
     std::vector<std::thread> threads;
@@ -91,8 +89,6 @@ TEST(MetricsTests, CounterStress) {
     }
     auto finish = std::chrono::system_clock::now();
     auto duration = finish - start;
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(duration)
-                     .count()
-              << "ms\n";
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "ms\n";
   }
 }

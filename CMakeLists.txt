@@ -10,7 +10,7 @@ option(ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer" OFF)
 
 message("ASAN: " ${ENABLE_ASAN})
 message("MSAN: " ${ENABLE_MSAN})
-message("TSAB: " ${ENABLE_TSAN})
+message("TSAN: " ${ENABLE_TSAN})
 message("UBSAN: " ${ENABLE_UBSAN})
 if(ENABLE_ASAN)
     message(STATUS "Enabling AddressSanitizer")
