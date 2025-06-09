@@ -45,3 +45,11 @@ jobs:
         cd builds/build_ubsan
         chmod +x tests/tests
         tests/tests
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install clang-format
+        run: sudo apt install -y clang-format
+      - uses: actions/checkout@v4
+      - name: Check clang-format
+        run: find ./ -iname '*.h' -o -iname '*.cpp' | xargs clang-format -n --Werror
