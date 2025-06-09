@@ -3,6 +3,5 @@
 #include <mutex>
 
 namespace ciri {
-namespace metrics {
-}
-}
+namespace metrics {}
+}  // namespace ciri
