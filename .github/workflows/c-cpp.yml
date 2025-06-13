@@ -41,16 +41,19 @@ jobs:
               with:
                   name: builds
                   path: builds
-            - name: setup
-              run: |
-                  export ILIAD_FILE="tests/tests/data/iliad.data"
+            - uses: actions/download-artifact@v4
+              with:
+                  name: tests
+                  path: tests
             - name: test
               run: |
+                  export ILIAD_FILE="tests/tests/data/iliad.data"
                   cd builds/build
                   chmod +x tests/tests
                   tests/tests
             - name: test_ubsan
               run: |
+                  export ILIAD_FILE="tests/tests/data/iliad.data"
                   cd builds/build_ubsan
                   chmod +x tests/tests
                   tests/tests
