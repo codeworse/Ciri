@@ -47,13 +47,13 @@ jobs:
                   path: tests
             - name: test
               run: |
-                  export ILIAD_FILE="tests/tests/data/iliad.data"
+                  export ILIAD_FILE="tests/iliad.data"
                   cd builds/build
                   chmod +x tests/tests
                   tests/tests
             - name: test_ubsan
               run: |
-                  export ILIAD_FILE="tests/tests/data/iliad.data"
+                  export ILIAD_FILE="tests/iliad.data"
                   cd builds/build_ubsan
                   chmod +x tests/tests
                   tests/tests
