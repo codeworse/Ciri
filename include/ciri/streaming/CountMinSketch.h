@@ -2,6 +2,7 @@
 #include <cmath>
 #include <concepts>
 #include <csignal>
+#include <limits>
 #include <type_traits>
 #include <vector>
 #include "ciri/utils/AlignedStorage.h"
@@ -38,11 +39,11 @@ public:
         }
     }
 
-    size_t get(ValueType value) const {
+    size_t getApprox(const ValueType& value) const {
         size_t hash = std::hash<ValueType>{}(value);
         uint32_t lower = (hash & ((1ull << 32) - 1));
         [[maybe_unused]] uint32_t upper = (hash >> 32);
-        size_t result = 0;
+        size_t result = std::numeric_limits<size_t>::max();
         for (size_t i = 0; i < rows_; ++i) {
             size_t column = hashs_[i].hash(lower) % columns_;
             auto counter =
@@ -50,6 +51,11 @@ public:
             result = result > counter ? counter : result;
         }
         return result;
+    }
+
+    size_t get(const ValueType& value) const {
+        std::atomic_thread_fence(std::memory_order_acquire);
+        return getApprox(value);
     }
 
     ~CountMinSketch() = default;
