@@ -14,7 +14,7 @@ Example:
   ciri::metrics::Counter c(2); // Create counter with 2 parts and the type of metric is size_t(default)
   c.increment(1); // Add 1 to the counter
   c.decrement(1); // Substract 1 from the counter
-  size_t answer = c.get(); // Get the value of metric
+  size_t answer = c.getApprox(); // Get the value of metric
   // ...
 ```
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.29.2)
-project(Ciri CXX)
+project(ciri LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -33,15 +33,19 @@ else()
     add_compile_options(-O3)
 endif()
 
-set(SOURCES
-    src/metrics/counter_basic.cpp
+set(CIRI_SOURCES
+    include/ciri/metrics/CounterBasic.h
+    include/ciri/metrics/CounterSum.h
+    include/ciri/metrics/CounterMinMax.h
+    include/ciri/utils/LinearHash.h src/utils/LinearHash.cpp
+    include/ciri/streaming/CountMinSketch.h
 )
-set(HEADERS
-    src/metrics/counter_sum.h
-    src/metrics/counter_minmax.h
-    src/metrics/counter_basic.h
-)
-add_library(ciri STATIC ${SOURCES} ${HEADERS})
+add_library(${PROJECT_NAME} ${CIRI_SOURCES})
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/include)
+target_link_libraries(${PROJECT_NAME} PRIVATE atomic)
+install(TARGETS ciri)
+
 
 include(FetchContent)
 FetchContent_Declare(
@@ -50,5 +54,4 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-target_include_directories(ciri PUBLIC src)
 add_subdirectory(tests)
