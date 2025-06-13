@@ -17,8 +17,3 @@ Example:
   size_t answer = c.getApprox(); // Get the value of metric
   // ...
 ```
-
-## TODO
-- [ ] Add average counter
-- [ ] Add set-counter
-- [ ] Streaming Algorithms(count min/max/majority)
