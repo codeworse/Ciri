@@ -12,6 +12,8 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4
+            - name: setup
+              run: cd tests/data && bash setup.bash
             - name: build
               run: mkdir build && cd build && cmake .. && make -j `nproc`
             - name: build_asan
@@ -25,6 +27,11 @@ jobs:
               with:
                   name: builds
                   path: build*
+            - name: Upload test data
+              uses: actions/upload-artifact@v4
+              with:
+                  name: tests
+                  path: tests/data/*.data
     test:
         runs-on: ubuntu-latest
         needs: build
@@ -34,6 +41,9 @@ jobs:
               with:
                   name: builds
                   path: builds
+            - name: setup
+              run: |
+                  export ILIAD_FILE="tests/tests/data/iliad.data"
             - name: test
               run: |
                   cd builds/build

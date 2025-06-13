@@ -3,6 +3,7 @@
 #include <atomic>
 #include <chrono>
 #include <cmath>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
@@ -46,15 +47,17 @@ void fill_answer(std::istream& in) {
 }
 
 TEST(StreamingTests, CountMinSketch) {
+    std::string iliad_file = std::getenv("ILIAD_FILE");
+    std::cout << "using iliad file: " << iliad_file << "\n";
     {  /// fill answer
-        std::ifstream iliad("../tests/data/iliad.txt");
+        std::ifstream iliad(iliad_file);
         fill_answer(iliad);
     }
 
     std::cout << "finish filling\n";
 
     {  /// cms
-        std::ifstream iliad("../tests/data/iliad.txt");
+        std::ifstream iliad(iliad_file);
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
                            run_cms(iliad, 0.1, 0.1))
                            .count();
