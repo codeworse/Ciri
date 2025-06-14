@@ -27,11 +27,6 @@ jobs:
               with:
                   name: builds
                   path: build*
-            - name: Upload test data
-              uses: actions/upload-artifact@v4
-              with:
-                  name: tests
-                  path: tests/data/*.data
     test:
         runs-on: ubuntu-latest
         needs: build
@@ -41,19 +36,17 @@ jobs:
               with:
                   name: builds
                   path: builds
-            - uses: actions/download-artifact@v4
-              with:
-                  name: tests
-                  path: tests
+            - name: setup data
+              run: |
+                  cd tests/data && bash setup.bash
+                  export ILIAD_FILE=${PWD}/tests/data/iliad.data
             - name: test
               run: |
-                  export ILIAD_FILE="tests/iliad.data"
                   cd builds/build
                   chmod +x tests/tests
                   tests/tests
             - name: test_ubsan
               run: |
-                  export ILIAD_FILE="tests/iliad.data"
                   cd builds/build_ubsan
                   chmod +x tests/tests
                   tests/tests
