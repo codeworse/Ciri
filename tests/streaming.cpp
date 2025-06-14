@@ -4,11 +4,11 @@
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
 #include <vector>
-#include <filesystem>
 
 const std::vector<std::string> test_words = {"The",   "question", "is",  "not",
                                              "where", "but",      "when"};
