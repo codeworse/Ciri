@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
@@ -48,6 +49,8 @@ void fill_answer(std::istream& in) {
 
 TEST(StreamingTests, CountMinSketch) {
     std::string iliad_file = std::getenv("ILIAD_FILE");
+    std::filesystem::path p{iliad_file.c_str()};
+    EXPECT_TRUE(std::filesystem::exists(p));
     std::cout << "using iliad file: " << iliad_file << "\n";
     {  /// fill answer
         std::ifstream iliad(iliad_file);
